@@ -21,7 +21,7 @@
           <label class="formControls_label" for="email">Email</label>
           <input
             class="formControls_input"
-            type="text"
+            type="email"
             id="email"
             name="email"
             placeholder="請輸入 email"
@@ -81,18 +81,24 @@ const signupField = ref({
   nickname: ''
 })
 
+const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+
 const signup = async () => {
   if (signupField.value.password !== signupField.value.confirmPassword) {
     alert('輸入的密碼不一致，請重新確認')
     return
+  }else if (!emailRule.test(signupField.value.email)) {
+    alert('請輸入正確的信箱格式')
+    return
   }
+
   try {
     const res = await axios.post(`${api}/users/sign_up`, signupField.value)
     alert('註冊成功，請重新登入！')
 
     setTimeout(() => {
       router.push('/login')
-    }, 1500)
+    }, 1000)
   } catch (err) {
     alert('註冊失敗：' + err.message)
   }
