@@ -51,6 +51,7 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { ref } from 'vue'
 const api = 'https://todolist-api.hexschool.io'
 const token = ref('')
@@ -75,13 +76,23 @@ const signin = async () => {
     signinData.value = res.data
     token.value = res.data.token
     document.cookie = `customTodoName=${res.data.token}`
-    alert(`登入成功～${signinData.value.nickname}歡迎回來！`)
+    Swal.fire({
+      title: '登入成功',
+      text: `${signinData.value.nickname}歡迎回來！`,
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
     signInField.value = {}
     setTimeout(() => {
       router.push('/todolist')
-    }, 1000)
+    }, 1500)
   } catch (err) {
-    alert('登入失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '登入失敗',
+      text: '請檢查輸入內容是否正確！'
+    })
   }
 }
 </script>

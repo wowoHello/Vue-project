@@ -69,6 +69,7 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { ref } from 'vue'
 const api = 'https://todolist-api.hexschool.io'
 const router = useRouter()
@@ -81,26 +82,40 @@ const signupField = ref({
   nickname: ''
 })
 
-const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/;
+const emailRule = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z]+$/
 
 const signup = async () => {
-  if (signupField.value.password !== signupField.value.confirmPassword) {
-    alert('輸入的密碼不一致，請重新確認')
+  if (!emailRule.test(signupField.value.email)) {
+    Swal.fire({
+      icon: 'error',
+      title: '請輸入正確的信箱格式'
+    })
     return
-  }else if (!emailRule.test(signupField.value.email)) {
-    alert('請輸入正確的信箱格式')
+  } else if (signupField.value.password !== signupField.value.confirmPassword) {
+    Swal.fire({
+      icon: 'error',
+      title: '輸入的密碼不一致，請重新確認'
+    })
     return
   }
 
   try {
     const res = await axios.post(`${api}/users/sign_up`, signupField.value)
-    alert('註冊成功，請重新登入！')
-
+    Swal.fire({
+      title: '註冊成功',
+      text: '請重新登入！',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
     setTimeout(() => {
       router.push('/login')
-    }, 1000)
+    }, 1500)
   } catch (err) {
-    alert('註冊失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '註冊失敗：' + err.message
+    })
   }
 }
 </script>

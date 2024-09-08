@@ -126,6 +126,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { computed, onMounted, ref } from 'vue'
 const api = 'https://todolist-api.hexschool.io'
 const token = ref('')
@@ -157,7 +158,12 @@ onMounted(async () => {
     })
     .catch(function (err) {
       token.value = ''
-      alert('請重新登入：' + err.message)
+      Swal.fire({
+        icon: 'error',
+        title: '請重新登入',
+        showConfirmButton: false,
+        timer: 1500
+      })
       setTimeout(() => {
         router.push('/login')
       }, 1500)
@@ -176,14 +182,22 @@ const signOut = async () => {
         }
       }
     )
+    Swal.fire({
+      title: '期待下次再見',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1500
+    })
     signinData.value = {}
     token.value = ''
-    alert('登出成功！')
     setTimeout(() => {
       router.push('/login')
-    }, 1000)
+    }, 1500)
   } catch (err) {
-    alert('登出失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '登出失敗'
+    })
   }
 }
 
@@ -206,7 +220,10 @@ const getTodoList = async () => {
     })
     todoListObj.value = res.data.data
   } catch (err) {
-    alert('資料取得失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '資料取得失敗'
+    })
   }
 }
 // 創建項目
@@ -217,8 +234,11 @@ const CreateTodoList = async () => {
 
   // 先檢查內容是否為空白
   if (!todo.content.trim()) {
-    alert('內容不可以是空白唷');
-    return;
+    Swal.fire({
+      icon: 'error',
+      title: '內容不可以是空白唷'
+    })
+    return
   }
 
   try {
@@ -227,11 +247,19 @@ const CreateTodoList = async () => {
         Authorization: token.value
       }
     })
-    alert('新增成功！')
+    Swal.fire({
+      title: '新增成功！',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1000
+    })
     newTodo.value = ''
     getTodoList()
   } catch (err) {
-    alert('新增失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '資料新增失敗！'
+    })
   }
 }
 
@@ -268,7 +296,10 @@ const updateStatus = async (id) => {
     // 更新本地狀態
     getTodoList()
   } catch (err) {
-    alert('狀態更新失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '狀態更新失敗！'
+    })
   }
 }
 
@@ -281,9 +312,17 @@ const deleteTodo = async (index) => {
       }
     })
     todoListObj.value.splice(index, 1)
-    alert('刪除成功！')
+    Swal.fire({
+      title: '刪除成功！',
+      icon: 'success',
+      showConfirmButton: false,
+      timer: 1000
+    })
   } catch (err) {
-    alert('刪除失敗：' + err.message)
+    Swal.fire({
+      icon: 'error',
+      title: '刪除失敗！'
+    })
   }
 }
 </script>
