@@ -20,7 +20,7 @@
             <i class="fa fa-plus"></i>
           </a>
         </div>
-        <div class="todoList_list">
+        <div class="todoList_list" v-if="todoListObj.length > 0">
           <ul class="todoList_tab">
             <li>
               <a
@@ -115,7 +115,10 @@
             <div class="todoList_statistics">
               <p>{{ type3Count }} 個已完成項目</p>
             </div>
-          </div>
+          </div>          
+        </div>
+        <div v-else>
+            目前尚無待辦事項
         </div>
       </div>
     </div>
@@ -261,7 +264,7 @@ const updateStatus = async (id) => {
       }
     )
     // 更新本地狀態
-    getTodoList();
+    getTodoList()
   } catch (err) {
     alert('狀態更新失敗：' + err.message)
   }
