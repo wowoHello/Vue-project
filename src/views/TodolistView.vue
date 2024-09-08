@@ -50,7 +50,7 @@
           <!-- 全部項目 -->
           <div class="todoList_items" v-show="activeType === '1'">
             <ul class="todoList_item">
-              <li v-for="todo in type1" :key="todo.id">
+              <li v-for="todo in allItem" :key="todo.id">
                 <label class="todoList_label">
                   <input
                     class="todoList_input"
@@ -67,13 +67,13 @@
               </li>
             </ul>
             <div class="todoList_statistics">
-              <p>{{ type2Count }} 個待完成項目</p>
+              <p>{{ notOverCount }} 個待完成項目</p>
             </div>
           </div>
           <!-- 待完成 -->
           <div class="todoList_items" v-show="activeType === '2'">
             <ul class="todoList_item">
-              <li v-for="todo in type2" :key="todo.id">
+              <li v-for="todo in notOver" :key="todo.id">
                 <label class="todoList_label">
                   <input
                     class="todoList_input"
@@ -90,13 +90,13 @@
               </li>
             </ul>
             <div class="todoList_statistics">
-              <p>{{ type2Count }} 個待完成項目</p>
+              <p>{{ notOverCount }} 個待完成項目</p>
             </div>
           </div>
           <!-- 已完成 -->
           <div class="todoList_items" v-show="activeType === '3'">
             <ul class="todoList_item">
-              <li v-for="todo in type3" :key="todo.id">
+              <li v-for="todo in Over" :key="todo.id">
                 <label class="todoList_label">
                   <input
                     class="todoList_input"
@@ -113,13 +113,11 @@
               </li>
             </ul>
             <div class="todoList_statistics">
-              <p>{{ type3Count }} 個已完成項目</p>
+              <p>{{ OverCount }} 個已完成項目</p>
             </div>
-          </div>          
+          </div>
         </div>
-        <div v-else>
-            目前尚無待辦事項
-        </div>
+        <div class="noitem" v-else>目前尚無待辦事項</div>
       </div>
     </div>
   </div>
@@ -216,6 +214,13 @@ const CreateTodoList = async () => {
   const todo = {
     content: newTodo.value
   }
+
+  // 先檢查內容是否為空白
+  if (!todo.content.trim()) {
+    alert('內容不可以是空白唷');
+    return;
+  }
+
   try {
     const res = await axios.post(`${api}/todos/`, todo, {
       headers: {
@@ -231,22 +236,19 @@ const CreateTodoList = async () => {
 }
 
 // 切換欄位
-const type1 = computed(() => {
+const allItem = computed(() => {
   return todoListObj.value
 })
-const type1Count = computed(() => {
-  return todoListObj.value.length
-})
-const type2 = computed(() => {
+const notOver = computed(() => {
   return todoListObj.value.filter((item) => item.status === false)
 })
-const type2Count = computed(() => {
+const notOverCount = computed(() => {
   return todoListObj.value.filter((item) => item.status === false).length
 })
-const type3 = computed(() => {
+const Over = computed(() => {
   return todoListObj.value.filter((item) => item.status === true)
 })
-const type3Count = computed(() => {
+const OverCount = computed(() => {
   return todoListObj.value.filter((item) => item.status === true).length
 })
 
